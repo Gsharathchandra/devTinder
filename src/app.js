@@ -3,6 +3,83 @@ import express from "express";
 import { userauth } from "./middleware/auth.js"; // ✅ Make sure this path and file exist
 import { connectDB } from "./config/database.js";
 const app = express();
+import { User } from "./models/user.js";
+app.use(express.json());
+
+//get all the users from the database with particular email
+app.get("/user",async(req,res)=>{
+  const useremail = req.body.emailId;
+
+  try {
+    const users = await User.findOne({emailId:useremail})
+    if(users.length === 0){
+      res.send("no user found bro");
+    }
+    else{
+      res.send(users);
+    }
+  } catch (error) {
+    res.send("cant find the user");
+  }
+
+})
+
+
+//fetch all the users
+app.get("/feed",async(req,res)=>{
+  try {
+    const users = await User.find({})
+   
+      res.send(users);
+    
+  } 
+  catch (error) {
+    res.send("cant find the users bro");
+  }
+
+})
+
+
+//delete a user
+app.delete("/user",async (req,res)=>{
+  const userId = req.body.userId;
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    res.send("deleted bro");
+  } catch (error) {
+    res.send("cant delete bro");
+  }
+})
+
+
+// post users into the database
+app.post("/signup", async (req,res)=>{
+ 
+  const user = new User(req.body);
+  try {
+    await user.save();
+  res.send("user added sucessfully")
+    
+  } catch (error) {
+    res.send("something went bad")
+  }
+  
+})
+
+//update the data of the user
+app.patch("/update",async(req,res)=>{
+  
+  const userId = req.body.userId;
+  const data = req.body
+  try {
+    const user =await User.findByIdAndUpdate(userId,data);
+    //const user =await User.findByIdAndUpdate({_id:userId},data);
+    console.log("sucessfully updated");
+    res.send(user);
+  } catch (error) {
+    res.send("cant update bro");
+  }
+})
 
 connectDB().then(()=>{
     console.log("database has been connected");
@@ -12,7 +89,6 @@ connectDB().then(()=>{
 }).catch((err)=>{
     console.log("database cannot be connected");
 });
-
 
 
 
