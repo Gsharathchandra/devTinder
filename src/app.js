@@ -4,8 +4,12 @@ import { userauth } from "./middleware/auth.js"; // ✅ Make sure this path and 
 import { connectDB } from "./config/database.js";
 const app = express();
 import { User } from "./models/user.js";
-app.use(express.json());
 import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
+
+app.use(express.json());
+app.use(cookieParser());
+//need cookie parser to read a cookie
 
 //get all the users from the database with particular email
 app.get("/user",async(req,res)=>{
@@ -93,6 +97,12 @@ app.patch("/update",async(req,res)=>{
   }
 })
 
+//profile api
+app.get("/profile",async (req,res)=>{
+  const cookie = req.cookies;
+  console.log(cookies);
+  res.send("reading cookies");
+})
 
 
 
@@ -109,6 +119,7 @@ app.post("/login",async (req,res)=>{
       throw new Error("invalid credentials");
     }
     else{
+      res.cookie("token","uoiewhfoiefoiewoiioihjeuhfde");
       res.send("sucessfully login");
     }
 
