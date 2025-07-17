@@ -147,11 +147,12 @@ app.get("/profile",async (req,res)=>{
 
   const user = await User.findById(_id);
   if(!user){
-    console.log(user);
-    res.send(user);
+   throw new Error("user not exist");
   }
+
   
-  console.log(cookie);
+  console.log(user);
+  res.send(user);
   
 
   } catch (error) {
