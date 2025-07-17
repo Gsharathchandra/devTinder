@@ -97,10 +97,10 @@ app.patch("/update",async(req,res)=>{
   }
 })
 
-//profile api
+//profile api for checking the cookies
 app.get("/profile",async (req,res)=>{
   const cookie = req.cookies;
-  console.log(cookies);
+  console.log(cookie);
   res.send("reading cookies");
 })
 
@@ -115,12 +115,18 @@ app.post("/login",async (req,res)=>{
      throw new Error("invalid credentials");
     }
     const ispasswordcorrect = await bcrypt.compare(password,user.password);
-    if(!ispasswordcorrect){
-      throw new Error("invalid credentials");
+    if(ispasswordcorrect){
+
+      //create a jwt token
+     const token = await jwt.sign({_id:user._id},"secretkey")
+
+
+      res.cookie("token",token);
+      res.send("sucessfully login");
     }
     else{
-      res.cookie("token","uoiewhfoiefoiewoiioihjeuhfde");
-      res.send("sucessfully login");
+      
+      throw new Error("invalid credentials");
     }
 
     
