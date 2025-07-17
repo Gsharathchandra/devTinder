@@ -102,11 +102,11 @@ app.post("/login",async (req,res)=>{
     const {emailId,password} = req.body
     const user =await User.findOne({emailId:emailId});
     if(!user){
-     throw new Error("email doesnt exist");
+     throw new Error("invalid credentials");
     }
     const ispasswordcorrect = await bcrypt.compare(password,user.password);
     if(!ispasswordcorrect){
-      throw new Error("wrong password");
+      throw new Error("invalid credentials");
     }
     else{
       res.send("sucessfully login");
