@@ -10,6 +10,9 @@ import jwt from "jsonwebtoken"
 
 app.use(express.json());
 app.use(cookieParser());
+
+
+
 //need cookie parser to read a cookie
 
 //get all the users from the database with particular email
@@ -111,7 +114,7 @@ app.post("/login",async (req,res)=>{
     if(ispasswordcorrect){
 
       //create a jwt token
-     const token = await jwt.sign({_id:user._id},"secretkey")
+     const token = await jwt.sign({_id:user._id},"secretkey",{expiresIn:"1d"})
 
 
       res.cookie("token",token);
@@ -132,32 +135,12 @@ app.post("/login",async (req,res)=>{
 
 
 //profile api for checking the cookies
-app.get("/profile",async (req,res)=>{
+app.get("/profile",userauth,async (req,res)=>{
   try {
-    const cookie = req.cookies;
-  const {token} = cookie;
-  if(!token){
-    throw new Error("invalid token")
-    
-  }
-
-  const decodedmessage = await jwt.verify(token,"secretkey");
-  const {_id} = decodedmessage;
-  console.log("the id is : "+_id);
-
-  const user = await User.findById(_id);
-  if(!user){
-   throw new Error("user not exist");
-  }
-
-  
-  console.log(user);
+  const user = req.user;
   res.send(user);
-  
-
   } catch (error) {
-    console.log("the error is"+error);
-    
+   res.send("the error is"+error);  
   }
 })
 
