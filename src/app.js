@@ -5,6 +5,7 @@ import { connectDB } from "./config/database.js";
 const app = express();
 import { User } from "./models/user.js";
 app.use(express.json());
+import bcrypt from "bcrypt";
 
 //get all the users from the database with particular email
 app.get("/user",async(req,res)=>{
@@ -54,8 +55,15 @@ app.delete("/user",async (req,res)=>{
 
 // post users into the database
 app.post("/signup", async (req,res)=>{
+
+  const{password} = req.body;
+  const hashedpassword = await bcrypt.hash(password,10);
+  //console.log(hashedpassword);
+  
  
-  const user = new User(req.body);
+  const user = new User({
+    firstName,lastName,emailId,password:hashedpassword,
+  });
   try {
     await user.save();
   res.send("user added sucessfully")
