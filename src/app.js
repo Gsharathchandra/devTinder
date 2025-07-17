@@ -93,6 +93,32 @@ app.patch("/update",async(req,res)=>{
   }
 })
 
+
+
+
+//login for the users;
+app.post("/login",async (req,res)=>{
+  try {
+    const {emailId,password} = req.body
+    const user =await User.findOne({emailId:emailId});
+    if(!user){
+     throw new Error("email doesnt exist");
+    }
+    const ispasswordcorrect = await bcrypt.compare(password,user.password);
+    if(!ispasswordcorrect){
+      throw new Error("wrong password");
+    }
+    else{
+      res.send("sucessfully login");
+    }
+
+    
+  } catch (error) {
+    res.send("cant login because : " + error.message);
+  }
+
+})
+
 connectDB().then(()=>{
     console.log("database has been connected");
     app.listen(3000, () => {
