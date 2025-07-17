@@ -114,7 +114,7 @@ app.post("/login",async (req,res)=>{
     if(ispasswordcorrect){
 
       //create a jwt token
-     const token = await jwt.sign({_id:user._id},"secretkey",{expiresIn:"1d"})
+     const token = await user.getJWT; 
 
 
       res.cookie("token",token);
