@@ -61,7 +61,7 @@ app.post("/signup", async (req,res)=>{
   res.send("user added sucessfully")
     
   } catch (error) {
-    res.send("something went bad")
+    res.status(400).send("something went bad")
   }
   
 })
