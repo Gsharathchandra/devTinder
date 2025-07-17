@@ -56,7 +56,9 @@ app.delete("/user",async (req,res)=>{
 // post users into the database
 app.post("/signup", async (req,res)=>{
 
-  const{password} = req.body;
+  
+  try {
+    const{password,firstName,lastName,emailId} = req.body;
   const hashedpassword = await bcrypt.hash(password,10);
   //console.log(hashedpassword);
   
@@ -67,7 +69,6 @@ app.post("/signup", async (req,res)=>{
     emailId,
     password:hashedpassword,
   });
-  try {
     await user.save();
   res.send("user added sucessfully")
     
