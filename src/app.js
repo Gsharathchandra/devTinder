@@ -6,6 +6,7 @@ const app = express();
 import { User } from "./models/user.js";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken"
 
 app.use(express.json());
 app.use(cookieParser());
@@ -97,14 +98,6 @@ app.patch("/update",async(req,res)=>{
   }
 })
 
-//profile api for checking the cookies
-app.get("/profile",async (req,res)=>{
-  const cookie = req.cookies;
-  console.log(cookie);
-  res.send("reading cookies");
-})
-
-
 
 //login for the users;
 app.post("/login",async (req,res)=>{
@@ -134,6 +127,37 @@ app.post("/login",async (req,res)=>{
     res.send("cant login because : " + error.message);
   }
 
+})
+
+
+
+//profile api for checking the cookies
+app.get("/profile",async (req,res)=>{
+  try {
+    const cookie = req.cookies;
+  const {token} = cookie;
+  if(!token){
+    throw new Error("invalid token")
+    
+  }
+
+  const decodedmessage = await jwt.verify(token,"secretkey");
+  const {_id} = decodedmessage;
+  console.log("the id is : "+_id);
+
+  const user = await User.findById(_id);
+  if(!user){
+    console.log(user);
+    res.send(user);
+  }
+  
+  console.log(cookie);
+  
+
+  } catch (error) {
+    console.log("the error is"+error);
+    
+  }
 })
 
 connectDB().then(()=>{
