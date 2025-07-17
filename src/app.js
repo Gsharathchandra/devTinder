@@ -62,7 +62,10 @@ app.post("/signup", async (req,res)=>{
   
  
   const user = new User({
-    firstName,lastName,emailId,password:hashedpassword,
+    firstName,
+    lastName,
+    emailId,
+    password:hashedpassword,
   });
   try {
     await user.save();
