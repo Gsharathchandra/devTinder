@@ -60,8 +60,8 @@ app.post("/signup", async (req,res)=>{
     await user.save();
   res.send("user added sucessfully")
     
-  } catch (error) {
-    res.status(400).send("something went bad")
+  } catch (err) {
+    res.status(400).send("something went bad"+err.message);
   }
   
 })
@@ -72,12 +72,12 @@ app.patch("/update",async(req,res)=>{
   const userId = req.body.userId;
   const data = req.body
   try {
-    const user =await User.findByIdAndUpdate(userId,data);
+    const user =await User.findByIdAndUpdate(userId,data,{runValidators:true,});
     //const user =await User.findByIdAndUpdate({_id:userId},data);
     console.log("sucessfully updated");
     res.send(user);
-  } catch (error) {
-    res.send("cant update bro");
+  } catch (err) {
+    res.send("cant update bro"+err.message);
   }
 })
 
