@@ -117,7 +117,7 @@ app.post("/login",async (req,res)=>{
      const token = await jwt.sign({_id:user._id},"secretkey",{expiresIn:"1d"})
 
 
-      res.cookie("token",token,{expires});
+      res.cookie("token",token);
       res.send("sucessfully login");
     }
     else{
