@@ -13,3 +13,4 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     res.status(400).send("ERROR : " + err.message);
   }
 });
+module.exports = profileRouter

@@ -36,3 +36,6 @@ authRouter.post("/signup", async (req, res) => {
     res.status(400).send("ERROR : " + err.message);
   }
 });
+
+
+module.exports = authRouter;
