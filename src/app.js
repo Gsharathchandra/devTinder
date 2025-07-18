@@ -1,148 +1,21 @@
 
-import express from "express"; 
-import { userauth } from "./middleware/auth.js"; // ✅ Make sure this path and file exist
-import { connectDB } from "./config/database.js";
+const express = require("express");
+const connectDB = require("./config/database");
 const app = express();
-import { User } from "./models/user.js";
-import bcrypt from "bcrypt";
-import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken"
-
+const cookieParser = require("cookie-parser");
 app.use(express.json());
 app.use(cookieParser());
 
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
 
 
 //need cookie parser to read a cookie
 
 //get all the users from the database with particular email
-app.get("/user",async(req,res)=>{
-  const useremail = req.body.emailId;
-
-  try {
-    const users = await User.findOne({emailId:useremail})
-    if(users.length === 0){
-      res.send("no user found bro");
-    }
-    else{
-      res.send(users);
-    }
-  } catch (error) {
-    res.send("cant find the user");
-  }
-
-})
 
 
-//fetch all the users
-app.get("/feed",async(req,res)=>{
-  try {
-    const users = await User.find({})
-   
-      res.send(users);
-    
-  } 
-  catch (error) {
-    res.send("cant find the users bro");
-  }
-
-})
-
-
-//delete a user
-app.delete("/user",async (req,res)=>{
-  const userId = req.body.userId;
-  try {
-    const user = await User.findByIdAndDelete(userId);
-    res.send("deleted bro");
-  } catch (error) {
-    res.send("cant delete bro");
-  }
-})
-
-
-// post users into the database
-app.post("/signup", async (req,res)=>{
-
-  
-  try {
-    const{password,firstName,lastName,emailId} = req.body;
-  const hashedpassword = await bcrypt.hash(password,10);
-  //console.log(hashedpassword);
-  
- 
-  const user = new User({
-    firstName,
-    lastName,
-    emailId,
-    password:hashedpassword,
-  });
-    await user.save();
-  res.send("user added sucessfully")
-    
-  } catch (err) {
-    res.status(400).send("something went bad"+err.message);
-  }
-  
-})
-
-//update the data of the user
-app.patch("/update",async(req,res)=>{
-  
-  const userId = req.body.userId;
-  const data = req.body
-  try {
-    const user =await User.findByIdAndUpdate(userId,data,{runValidators:true,});
-    //const user =await User.findByIdAndUpdate({_id:userId},data);
-    console.log("sucessfully updated");
-    res.send(user);
-  } catch (err) {
-    res.send("cant update bro"+err.message);
-  }
-})
-
-
-//login for the users;
-app.post("/login",async (req,res)=>{
-  try {
-    const {emailId,password} = req.body
-    const user =await User.findOne({emailId:emailId});
-    if(!user){
-     throw new Error("invalid credentials");
-    }
-    const ispasswordcorrect = await bcrypt.compare(password,user.password);
-    if(ispasswordcorrect){
-
-      //create a jwt token
-     const token = await jwt.sign({_id:user._id},"secretkey",{expiresIn:"1d"})
-
-
-      res.cookie("token",token);
-      res.send("sucessfully login");
-    }
-    else{
-      
-      throw new Error("invalid credentials");
-    }
-
-    
-  } catch (error) {
-    res.send("cant login because : " + error.message);
-  }
-
-})
-
-
-
-//profile api for checking the cookies
-app.get("/profile",userauth,async (req,res)=>{
-  try {
-  const user = req.user;
-  res.send(user);
-  } catch (error) {
-   res.send("the error is"+error);  
-  }
-})
 
 connectDB().then(()=>{
     console.log("database has been connected");

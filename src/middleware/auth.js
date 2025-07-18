@@ -1,30 +1,30 @@
 
-import jwt from "jsonwebtoken";
-import { User } from "../models/user.js";
-export const userauth = async (req, res, next) => {
-  //read a token from the cookie
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
+
+const userAuth = async (req, res, next) => {
   try {
-      const cookie = req.cookies;
-  const {token} = cookie;
-    if(!token){
-       throw new Error("its invalid token");
+    const { token } = req.cookies;
+    if (!token) {
+      return res.status(401).send("Please Login!");
     }
-  
-  //validate the user
-  const decodedmessage = await jwt.verify(token,"secretkey");
-  const {_id} = decodedmessage;
- 
-  //find the user id and the user
-   const user = await User.findById(_id );
-   if(!user){
-     throw new Error("user not found");
-   }
-  else{
+
+    const decodedObj = await jwt.verify(token, process.env.JWT_SECRET);
+
+    const { _id } = decodedObj;
+
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     req.user = user;
     next();
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
   }
-    
-  } catch (error) {
-    res.status(400).send("error is"+error.message)
-  }
+};
+
+module.exports = {
+  userAuth,
 };
