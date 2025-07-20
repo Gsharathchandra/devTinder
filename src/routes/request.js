@@ -11,8 +11,8 @@ const fromUserId = req.user._id;
 const toUserId = req.params.toUserId;
 const status = req.params.status;
 
-if(fromUserId ===  toUserId){
-     throw new Error("the fromuserid and touser are same");
+if(fromUserId ==  toUserId){
+     res.send("the fromuserid and touser are same");
 }
 
 const toUser = await User.findById(toUserId);
