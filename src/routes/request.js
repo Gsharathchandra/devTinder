@@ -45,7 +45,7 @@ const connectionRequest = new ConnectionRequest({
 
 const data = await connectionRequest.save();
 res.json({
-    message:"sucessfull connection request",
+    message:req.user.firstName+" is "+status+" in "+toUser.firstName,
     data
 
 })
