@@ -72,7 +72,7 @@ userRouter.get("/feed", userAuth, async (res, req) => {
     //see all cards except his,his connections,ignord people,already sent request
     const loggedInUser = req.user;
 
-    const connectionRequests = ConnectionRequest.find({
+    const connectionRequests =await  ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id },
          { toUserId: loggedInUser._id }],
     });
@@ -84,7 +84,7 @@ userRouter.get("/feed", userAuth, async (res, req) => {
         hideUserFromFeed.add(req.toUserId.toString());
     })
 
-    const users = await UserActivation.find({
+    const users = await User.find({
         $and:[{ _id:{$nin:Array.from(hideUserFromFeed)}},
             { _id:{$ne:loggedInUser._id}}
         ]
