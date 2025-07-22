@@ -4,7 +4,7 @@ const connectDB = require("./config/database");
 const app = express();
 const cookieParser = require("cookie-parser");
 
-app.use(express.json());
+app.use(express.json());//completed
 app.use(cookieParser());
 
 const authRouter = require("./routes/auth");
