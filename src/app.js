@@ -8,7 +8,7 @@ const cors = require("cors");
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"] // Added this line
+  
 }));
 app.use(express.json());//completed 
 app.use(cookieParser());
