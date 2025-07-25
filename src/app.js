@@ -6,10 +6,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-  
+  origin: "http://localhost:5173", // or "*" for development
+  credentials: true,               // allow cookies/credentials
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // important!
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 app.use(express.json());//completed 
 app.use(cookieParser());
 
@@ -24,13 +26,7 @@ app.use("/",requestRouter);
 app.use("/",userRouter);
 
 
-//need cookie parser to read a cookie
 
-//get all the users from the database with particular email
-
-
-
-//app.use("/",requestRouter);
 
 
 connectDB().then(()=>{
@@ -45,50 +41,3 @@ connectDB().then(()=>{
 
 
 
-// app.use("/",(err,req,res,next)=>{
-//     if(err){
-//         res.status(500).send("something went wrong");
-//     }
-// })
-
-// // ✅ Route 1
-// app.get(
-//   "/user/modifydata", userauth, // ✅ Middleware is applied correctly
-//   (req, res, next) => {          // 🟡 `next` is not used → should be removed
-//     res.send("hello i can modify"); 
-//     // 🟥 ERROR: `res.send` ends the response; do not call `next()` after this
-//   }
-// );
-
-// // ✅ Route 2
-// app.delete(
-//   "/user/deletedata", userauth,  // ✅ Same as above
-//   (req, res, next) => {          // 🟡 Again, `next` is unused → remove it
-//     res.send("hello i can delete");
-//   }
-// );
-
-
-
-//route  handler middleware response handler
-
-//query
-// app.get("/query",(req,res)=>{
-//     console.log(req.query);
-//     res.send({
-//         firstname:"sharath",
-//         lastname:"gumastha"
-//     })
-// })
-//params
-// app.get("/user/:userid/:name",(req,res)=>{
-//     console.log(req.params);
-//     res.send({
-//         firstname:"sharath",
-//         lastname:"gumastha"
-//     })
-// })
-
-// app.use("/hello",(req,res)=>{
-//     res.send("hello from the server ");
-// })
