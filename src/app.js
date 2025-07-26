@@ -47,17 +47,16 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-// Enhanced CORS configuration
+// CORS configuration
 app.use(cors({
-  origin: "http://localhost:5173", // Keep this specific for security
+  origin: "http://localhost:5173",
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  exposedHeaders: ["Authorization"] // Expose custom headers if needed
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// Explicitly handle OPTIONS requests for all routes
- // This handles preflight for ALL routes
+// Handle preflight OPTIONS requests specifically for your PATCH route
+app.options("/profile/edit", cors()); // This is the key line for your PATCH route
 
 app.use(express.json());
 app.use(cookieParser());
@@ -73,7 +72,7 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-// Database connection and server start
+// Database connection
 connectDB().then(() => {
     console.log("Database has been connected");
     app.listen(3000, () => {
@@ -81,5 +80,5 @@ connectDB().then(() => {
     });
 }).catch((err) => {
     console.error("Database connection failed:", err.message);
-    process.exit(1); // Exit if DB connection fails
+    process.exit(1);
 });
