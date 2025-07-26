@@ -49,24 +49,31 @@ const cors = require("cors");
 
 // CORS configuration
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+  const allowedOrigins = ['http://localhost:5173'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
   
   // Immediately respond to OPTIONS requests
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
   
   next();
 });
 
-// Your routes
-app.patch("/profile/edit", (req, res) => {
-  // Your existing patch handler
-  res.json({ success: true });
+// Your existing routes
+app.patch('/profile/edit', (req, res) => {
+  // Your existing handler
+  res.json({ success: true, message: "PATCH works!" });
 });
+
 
 app.use(express.json());
 app.use(cookieParser());
