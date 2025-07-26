@@ -48,15 +48,25 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 // CORS configuration
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  
+  // Immediately respond to OPTIONS requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
-// Handle preflight OPTIONS requests specifically for your PATCH route
-app.options("/profile/edit", cors()); // This is the key line for your PATCH route
+// Your routes
+app.patch("/profile/edit", (req, res) => {
+  // Your existing patch handler
+  res.json({ success: true });
+});
 
 app.use(express.json());
 app.use(cookieParser());
