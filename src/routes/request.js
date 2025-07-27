@@ -19,7 +19,7 @@ const toUser = await User.findById(toUserId);
 if(!toUser){
     throw new Error("the touser doesnt exist");
 }
-const allowedStatus = ["ignored","intrested"];
+const allowedStatus = ["ignored","interested"];
 if(!allowedStatus.includes(status)){
     return res.status(400).json({
         message : "invalid status type"+status
